@@ -12,7 +12,10 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: () {
-              // Placeholder for notifications
+              // Show notifications
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('No new alerts')),
+              );
             },
           ),
           IconButton(
@@ -23,232 +26,204 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Welcome Banner
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [Color(0xFF6A1B9A), Color(0xFF8E24AA)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.purple.withOpacity(0.3),
-                    blurRadius: 10,
-                    offset: const Offset(0, 5),
-                  ),
-                ],
+        children: [
+          _buildStatusCard(context),
+          const SizedBox(height: 24),
+          const Text(
+            'Protection Modules',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF4A148C),
+            ),
+          ),
+          const SizedBox(height: 16),
+          GridView.count(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            crossAxisCount: 2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+            childAspectRatio: 1.1,
+            children: [
+              _buildFeatureCard(
+                context,
+                'SMS Scams',
+                Icons.sms_failed_outlined,
+                Colors.orange,
+                'sms',
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: const [
-                  Text(
-                    'Stay Safe Online',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    'Secure Shield is active and monitoring for potential threats.',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                    ),
-                  ),
-                ],
+              _buildFeatureCard(
+                context,
+                'Fraud Calls',
+                Icons.phone_disabled_outlined,
+                Colors.red,
+                'calls',
               ),
-            ),
-            const SizedBox(height: 24),
-
-            // Categories Title
-            const Text(
-              'Protection Categories',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+              _buildFeatureCard(
+                context,
+                'Fake News',
+                Icons.newspaper_outlined,
+                Colors.blue,
+                'news',
               ),
-            ),
-            const SizedBox(height: 16),
-
-            // Grid of Categories
-            GridView.count(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              crossAxisCount: 2,
-              crossAxisSpacing: 16,
-              mainAxisSpacing: 16,
-              childAspectRatio: 1.1,
-              children: [
-                _buildCategoryCard(
-                  context,
-                  'SMS Scams',
-                  Icons.sms_failed_outlined,
-                  Colors.orange,
-                  'Detect fake messages',
-                ),
-                _buildCategoryCard(
-                  context,
-                  'Call Fraud',
-                  Icons.phone_locked_outlined,
-                  Colors.red,
-                  'Identify spam calls',
-                ),
-                _buildCategoryCard(
-                  context,
-                  'Fake News',
-                  Icons.newspaper_outlined,
-                  Colors.blue,
-                  'Verify news sources',
-                ),
-                _buildCategoryCard(
-                  context,
-                  'UPI Scams',
-                  Icons.payment_outlined,
-                  Colors.green,
-                  'Secure payments',
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 24),
-
-            // Safety Tips Section
-            const Text(
-              'Latest Safety Tips',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black87,
+              _buildFeatureCard(
+                context,
+                'UPI Scams',
+                Icons.payment_outlined,
+                Colors.green,
+                'upi',
               ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          const Text(
+            'Recent Alerts',
+            style: TextStyle(
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF4A148C),
             ),
-            const SizedBox(height: 12),
-            
-            _buildTipCard(
-              'Never share your OTP',
-              'Banks never ask for OTPs over the phone. Keep it private.',
-              Icons.lock_outline,
-            ),
-            _buildTipCard(
-              'Verify before you pay',
-              'Check the receiver name carefully before making any UPI transaction.',
-              Icons.verified_user_outlined,
-            ),
-            _buildTipCard(
-              'Spot phishing links',
-              'Do not click on suspicious links in SMS or emails claiming you won a prize.',
-              Icons.link_off_outlined,
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 16),
+          _buildAlertItem(
+            'Suspicious SMS detected',
+            'Yesterday, 10:30 AM',
+            Icons.warning_amber_rounded,
+            Colors.orange,
+          ),
+          _buildAlertItem(
+            'Safe browsing enabled',
+            'Today, 09:00 AM',
+            Icons.check_circle_outline,
+            Colors.green,
+          ),
+        ],
       ),
     );
   }
 
-  Widget _buildCategoryCard(BuildContext context, String title, IconData icon, Color color, String subtitle) {
+  Widget _buildStatusCard(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF6A1B9A), Color(0xFF9C27B0)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.purple.withOpacity(0.3),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.2),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.shield,
+              color: Colors.white,
+              size: 40,
+            ),
+          ),
+          const SizedBox(width: 16),
+          const Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'You are Protected',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              SizedBox(height: 4),
+              Text(
+                'System is running normally',
+                style: TextStyle(
+                  color: Colors.white70,
+                  fontSize: 14,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildFeatureCard(BuildContext context, String title, IconData icon, Color color, String type) {
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         onTap: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Scanning for $title...')),
+          Navigator.pushNamed(
+            context,
+            '/safety_tips',
+            arguments: {'title': title, 'type': type},
           );
         },
         borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, size: 32, color: color),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 12),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-                textAlign: TextAlign.center,
+              child: Icon(
+                icon,
+                size: 32,
+                color: color,
               ),
-              const SizedBox(height: 4),
-              Text(
-                subtitle,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
-                textAlign: TextAlign.center,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+            ),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildTipCard(String title, String description, IconData icon) {
+  Widget _buildAlertItem(String title, String time, IconData icon, Color color) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: const Color(0xFFF3E5F5),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, color: const Color(0xFF6A1B9A)),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.grey[700],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+      child: ListTile(
+        leading: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: color),
         ),
+        title: Text(
+          title,
+          style: const TextStyle(fontWeight: FontWeight.w600),
+        ),
+        subtitle: Text(time),
+        trailing: const Icon(Icons.chevron_right, color: Colors.grey),
       ),
     );
   }
